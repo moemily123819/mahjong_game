@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>*** Mahjong ***</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <div class="jumbotron" style="text-align: center; background-color:#D0F5A9; color:#243B0B; padding-top:20px;">
+            <h1>Let's play Mahjong</h1>
+              <br>
+            <hr>
+        </div> 
+        <section>   
+            <div class="existing-user">
+                <div class="col-md-offset-2 col-md-8">
+                        <form method="POST" action="/send" role="form", name="user_input", id='i_user'>                    
+                         <div class="form-group">
+                          <label for="i-user">Returning User : </label>
+                          <input class="form-control" id="user" name="existing-user" />
+                          <label for="i-pwd">Password : </label>
+                          <input type="password" id="pwd" name='existing-pwd'>
+                          <input type="checkbox" onclick="showPwd()">Show Password                   
+                          
+                          <input type="reset" id='reset_user' value="Reset" class="btn btn-primary btn-lg" style="margin-left:30px; font-size:15px;" onclick="i_user()">
+
+                     <br>
+                         <label for="i_new-user">New User : </label>
+                         <input class="form-control" id="newUser" name="new-user" />
+                         <label for="i_new-pwd">Password : </label>
+                         <input type="password" id="newPwd"  name='new-pwd'>
+                         <input type="checkbox" onclick="showPwd_new()">Show Password                   
+                         
+                         <input type="reset" id='reset_newUser' value="Reset" class="btn btn-primary btn-lg" style="margin-left:30px; font-size:15px;" onclick="i_newUser()">
+                         <input type="submit" id='login' value="Create User / Login" class="btn btn-primary btn-lg" style="margin-left:30px; font-size:15px;">
+                        </div>
+                      </form>
+                          
+
+                   </div>
+    
+                      <div class="err-msg-1 hidden">
+                        <h5><strong>Error - incorrect password !</strong></h5>
+                      </div>
+    
+                      <div class="err-msg-2 hidden">
+                        <h5><strong>Error - user does not exist !</strong></h5>
+                      </div>
+
+                      <div class="err-msg-3 hidden">
+                        <h5><strong>Error - user already logged in !</strong></h5>
+                      </div>
+
+                      <div class="err-msg- 4 hidden">
+                        <h5><strong>Error - user already exists !</strong></h5>
+                      </div>
+
+                      <div class="err-msg- 5 hidden">
+                          <h5><strong>Error - please login !</strong></h5>
+                        </div>
+                      </div>
+                </div>  
+    
+
+        </section>   
+    </div>
+
+<script>
+    function showPwd() {
+      var x = document.getElementById("pwd");
+      if (x.type === "password") {
+        x.type = "text";
+      } else {
+        x.type = "password";
+      }
+    }
+
+    function showPwd_new() {
+      var x = document.getElementById("newPwd");
+      if (x.type === "password") {
+        x.type = "text";
+      } else {
+        x.type = "password";
+      }
+    }
+
+  function i_user() {
+     document.getElementById("i_user").reset();
+  }
+
+  function i_newUser() {
+     document.getElementById("i_newUser").reset();
+  }
+
+
+</script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.min.js"></script>
+
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<!--    <script src="{{ url_for('static', filename='js/app.js') }}"></script> -->
+</body>
+
+</html>

@@ -1,0 +1,82 @@
+/* Styling for HTML elements */
+body {
+  padding: 0;
+  margin: 0;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 18px;
+  line-height: 150%;
+  color: #243B0B;
+  background: #D0F5A9;
+}
+
+li {
+  font-size: 18px;
+  
+}
+
+
+h1 {
+  padding: 20px 0;
+  margin: 0;
+  margin-bottom: 20px;
+  font-size: 28px;
+  text-align: center;
+}
+
+
+
+hr { display: block; height: 1px;
+    border: 0; border-top: 5px solid;
+    border-color: #243B0B;
+    width:100%;
+}
+
+
+#resequence {
+  float:left;
+  width: 95%;
+  height: 100px;
+  border: 2px solid black;
+}
+
+#dump {
+  float:right;
+  width: 100px;
+  margin-right : 30px;
+  height: 150px;
+  border: 2px solid black;
+}
+
+h6 {
+  padding: 0 0 0 0;
+  margin: 0 0 0 0;
+  text-align: center;
+}
+
+
+#pwd, #newPwd, #user, #newUser {
+  margin: 0;
+  margin-bottom: 10px;
+  font-size: 20px;
+  text-align: left;
+}
+
+
+#submit, #reset, #login {
+  padding: 10px 0;
+  margin: 0;
+  margin-bottom: 10px;
+  font-size: 20px;
+  font-weight:600;
+  text-align: center;
+}
+
+.hidden{
+    display : none;
+    opacity :0;
+}
+
+err-msg-1 {
+    margin-left:10px;
+    }
+

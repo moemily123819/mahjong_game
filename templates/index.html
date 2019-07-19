@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>*** Mahjong ***</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <div class="jumbotron" style="text-align: center; background-color:#D0F5A9; color:#243B0B; padding-top:20px;">
+            <h1>Let's play Mahjong</h1>
+            <a><img src="{{ url_for('static', filename='images/mahjong.PNG') }}" width="175" height="175"></a>
+              <br>
+            <hr>
+        </div> 
+        <section>   
+            <div class="jumbotron" style="text-align: center">
+              <h1>Create User / User Sign in</h1>
+              <a href="/send" class="btn btn-primary" role="button">Log On to Play</a>
+         </div>
+
+        </section>   
+    </div>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.min.js"></script>
+
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+
+</html>
