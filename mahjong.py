@@ -32,10 +32,11 @@ class Player:
         self.revealed = []
         
     def has(self, type, value):
+        count = 0
         for tile in self.hand:
             if tile.type == type and tile.value == value:
-                return True
-        return False
+                count += 1
+        return count
         
 class Round:
     def __init__(self):
