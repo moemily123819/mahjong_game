@@ -84,7 +84,7 @@ class Round:
             self.deal_flowers()
                     
     def crack(self, roll):
-        start = ((roll%4-1)*36 + 2*roll)%144
+        start = ((roll%4-1)*-36 + 2*roll)%144
         self.stack = self.stack[start:] + self.stack[:start]
         return start
     
