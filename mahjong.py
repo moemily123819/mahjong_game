@@ -37,7 +37,8 @@ class Player:
             if tile.type == type and tile.value == value:
                 count += 1
         return count
-        
+
+    
 class Round:
     def __init__(self):
         self.stack = []
@@ -73,12 +74,14 @@ class Round:
         any = False
         for i in self.east, self.south, self.west, self.north:
             counter = 0
-            copy = i.hand.copy()
-            for j in range(len(copy)):
-                if copy[j].type == 5 or copy[j].type == 6:
+            j = 0
+            while j < len(i.hand):
+                if i.hand[j].type == 5 or i.hand[j].type == 6:
                     counter += 1
                     any = True
                     i.revealed.append(i.hand.pop(j))
+                else:
+                    j += 1
             for j in range(counter):
                 i.hand.append(self.__pick_flower())
         if any:
@@ -133,7 +136,7 @@ class Round:
         self.discard = None
         return tile
     
-    def __get_player(self, wind):
+    def __get_player(self, seat):
         if seat == Wind.east:
             return self.east
         elif seat == Wind.south:
