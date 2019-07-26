@@ -133,6 +133,8 @@ submit.on("click", function() {
            l_status = login_status.login;
            l_user = login_status.user;
            l_error = login_status.error;
+           location.replace("../play")
+           console.log('login- success');
        
 })
 })    

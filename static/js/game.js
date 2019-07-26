@@ -70,8 +70,10 @@ if (first_round == "first") {
 }
    
 
+function getRndInteger(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) ) + min;
+}
 
-// clear error message
 
 //undo - restart to resequence tiles 
 var undo = d3.select("#undo");
@@ -92,51 +94,54 @@ undo.on("click", function() {
   }      
     
     
-//      document.getElementById('resequence')= resequence;
-//       document.replaceChild(new, old)
-    
+})
+
+//confirm - tile discarded
+var confirm = d3.select("#confirm");
+
+confirm.on("click", function() {
+
+  // Prevent the page from refreshing
+      d3.event.preventDefault();
+      console.log('confirm');
+      var discard_tile = localStorage.getItem("removed");
+      var url = "/discard/"+discard_tile;
+      d3.json(url).then(function(status) {
+        console.log('status:', statue);
+ 
     
 })
 
+//confirm - tile discarded
+var crack = d3.select("#crack");
+
+crack.on("click", function() {
+
+  // Prevent the page from refreshing
+      d3.event.preventDefault();
+      console.log('crack');
+      var roll = getRndInteger(3, 18);       
+      var url = "/crack/"+roll;
+      d3.json(url).then(function(start) {
+        console.log('crack - roll and start:', roll, start);
+     
+    })
+})
 
 
 function allowDrop(ev) {
   ev.preventDefault();
 }
         
+
+
 function drag(ev) {
   ev.dataTransfer.setData("text", ev.target.id);
 }
         
+
+
 function drop(ev) {
-//  var discard_area = d3.select(".discard_area");
-//  console.log('discard area', discard_area)  
-//  if (!discard_area.empty()) {
-//        discard_area.remove();
-//        }  
-    
-//  var dump_area = document.getElementById("#dump");  
-//  console.log('dump area', dump_area)  
-//  var img_var = dump_area.getElementsByTagName("img");
-//  var discarded_img = img_var[0];
-//  discarded_img.style.display = 'none';
-//  var throwawayNode = discarded_img.parentNode.removeChild(discarded_img);
-//  console.log('throwawayNode', throwawayNode);     
-//  if (first_round)   { 
-//      first_round = false;
-//  }
-//  else { 
-//      var dragged_item= localStorage.getItem("removed");
-//      console.log('dragged item', dragged_item);
-//      if (dragged_item) {
-//          var removed_item = document.getElementById(dragged_item);  
-//          if (removed_item) {
-//            removed_item.remove();
-//            console.log('removed item', removed_item); 
-//            localStorage.removeItem("removed");
-//          }
-//      }
-//  }
     
   ev.preventDefault();
    
@@ -151,26 +156,10 @@ function drop(ev) {
       if (removed_item) {
           removed_item.remove();
           console.log('removed item', removed_item); 
+          localStorage.clear();
+          localStorage.setItem("removed", removed_item);
+
       }
   }
     
 }
-
-      var sequence = document.getElementById('resequence');
-//      var seq =[];
-//      console.log('resequence', resequence);
-//      seq = resequence.split("");
-//      console.log('seq', seq);
-//      var i;
-//      var element_list= [];
-//      var an_element="";
-//      for (i = 0; i < seq.length; i++) { 
-//          an_element = an_element+seq[i];
-//          if (seq[i] == '>') {
-//              element_list.push(an_element);
-//              console.log('an_element', an_element);
-//              an_element="";
-//          }   
-//      }
-//      console.log('element_list', element_list);
-   

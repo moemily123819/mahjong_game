@@ -32,11 +32,13 @@ class Player:
         self.revealed = []
         
     def has(self, type, value):
-        for tile in hand:
+        count = 0
+        for tile in self.hand:
             if tile.type == type and tile.value == value:
-                return True
-        return False
-        
+                count += 1
+        return count
+
+    
 class Round:
     def __init__(self):
         self.stack = []
@@ -44,7 +46,7 @@ class Round:
             for i in range(1,10):
                 for j in range(3):
                     self.stack.append(Tile(j, i))
-            for i in range(4):
+            for i in range(1,5):
                 self.stack.append(Tile(3, i))
             for i in range(3):
                 self.stack.append(Tile(4, i))
@@ -72,19 +74,21 @@ class Round:
         any = False
         for i in self.east, self.south, self.west, self.north:
             counter = 0
-            copy = i.hand.copy()
-            for j in range(len(copy)):
-                if copy[j].type == 5 or copy[j].type == 6:
+            j = 0
+            while j < len(i.hand):
+                if i.hand[j].type == 5 or i.hand[j].type == 6:
                     counter += 1
                     any = True
                     i.revealed.append(i.hand.pop(j))
+                else:
+                    j += 1
             for j in range(counter):
                 i.hand.append(self.__pick_flower())
         if any:
             self.deal_flowers()
                     
     def crack(self, roll):
-        start = ((roll%4-1)*36 + 2*roll)%144
+        start = ((roll%4-1)*-36 + 2*roll)%144
         self.stack = self.stack[start:] + self.stack[:start]
         return start
     
@@ -132,7 +136,7 @@ class Round:
         self.discard = None
         return tile
     
-    def __get_player(self, wind):
+    def __get_player(self, seat):
         if seat == Wind.east:
             return self.east
         elif seat == Wind.south:

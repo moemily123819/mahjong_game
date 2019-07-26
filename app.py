@@ -7,7 +7,7 @@ from flask import (
     request,
     redirect)
 import sqlite3
-#from flask_socketio import SocketIO, join_room, emit
+#from flask_socketio import SocketIO, join_room, leave_room, send, emit
 from flask_sqlalchemy import SQLAlchemy
 
 
@@ -24,18 +24,25 @@ app = Flask(__name__)
 
 
 
-#app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or "sqlite:///db.sqlite"
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', '')
-##app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///db/mahjong.db"
+##____________________________
 
-##db = SQLAlchemy(app)
-        
-#from models import User
-
-#conn = sqlite3.connect("db/mahjong.db")
-#print('conn', conn)
-
-
+'''
+@socketio.on('join')
+def on_join(data):
+    username = data['username']
+    room = data['room']
+    join_room(room)
+    send(username + ' has entered the room', room=room)
+    
+@socketio.on('leave')
+def on_leave(data):
+    username = data['username']
+    room = data['room']
+    leave_room(room)
+    send(username + ' has left the room', room=room)
+    
+'''
+##____________________________
  
 # create route that renders index.html template
 @app.route("/")
@@ -116,10 +123,11 @@ def send():
                 if (new_user in arr_users):
                     error = 4
                 else:
-                    sql= '''INSERT INTO users (ID,NAME,PWD,STATUS) VALUES (nextrec, new_user, new_pwd, "1")''' ;
+                    task = (nextrec, new_user, new_pwd, '1')
+                    sql= '''INSERT INTO users(ID,NAME,PWD,STATUS) VALUES (?,?,?,?)''';
                     print('insert sql :', sql)
                     cur = conn.cursor()
-                    cur.execute(sql)
+                    cur.execute(sql, task)
                     current_user = new_user
                     nextrec = nextrec+1
                     conn.commit()
@@ -139,12 +147,18 @@ def send():
                         "error" : error}
                 
         
-        return redirect("/", code=302)
+#        return redirect("play", code=302)
     
     
     return render_template("user_input.html")
 
-    
+ 
+@app.route("/play")
+def play():
+
+    # Return template and data
+    return render_template("play.html")
+
     
     
     
@@ -226,7 +240,7 @@ def login():
     
         return render_template("input_user.html")
 
-
+    '''
 #@socketio.on('create')
 
 #def on_create(data):
@@ -249,7 +263,7 @@ def login():
 
 #    emit('join_room', {'room': room})
 
-
+'''
 
 if __name__ == "__main__":
     app.run()

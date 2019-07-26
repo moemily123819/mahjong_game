@@ -6,6 +6,7 @@ from flask import (
     jsonify,
     request,
     redirect)
+import numpy
 
 #################################################
 # Flask Setup
@@ -137,8 +138,22 @@ def home():
     return render_template("game.html", list= list, revealed_list = revealed_list, info=info)
 
 
-
-
+@app.route("/discard/<discard_tile>")
+def discard(discard_tile):
+    
+    print('discard tile:', discard_tile)
+    discard(self, seat, discard_tile)
+    
+    return redirect("/", code=302)
+    
+@app.route("/crack/<roll>")
+def crack(roll):
+    
+    start = crack(roll)
+    return redirect("/", code=302)
+    
+    
+    
 
 
 

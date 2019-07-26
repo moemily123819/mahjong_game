@@ -1,37 +1,189 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>*** Mahjong ***</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-
-<body>
-    <div class="container">
-        <div class="jumbotron" style="text-align: center; background-color:#D0F5A9; color:#243B0B; padding-top:20px;">
-            <h1>Let's play Mahjong</h1>
-            <a><img src="{{ url_for('static', filename='images/mahjong.PNG') }}" width="175" height="175"></a>
-              <br>
-            <hr>
-        </div> 
-        <section>   
-            <div class="jumbotron" style="text-align: center">
-              <h1>Create User / User Sign in</h1>
-              <a href="/send" class="btn btn-primary" role="button">Log On to Play</a>
-         </div>
-
-        </section>   
-    </div>
-
-
-
+ <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <title>Flask_Chat_App</title>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.9.1/d3-tip.js"></script>
+  
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/css/style.css">
+  
+  </head>
+  <body>
+    <div>
+      <h6 id='seat' style='color: #ccc;font-size: 30px; visibility:hidden;'>{{ status.seat }}</h6> 
+    </div>
+  <div class="row">
+        <div class="top-screen col-md-6">
+    <div class="message_holder"></div>
+        </div>
+    <div class="top-screen col-md-6">
+    <div class="game_info"></div>
+   
+    <h6 id='nbr_users' style='color: #ccc;font-size: 30px; visibility:hidden;'>{{ status.nbr_user }}</h6>
+    <h6 id='user_count' style='color: #ccc;font-size: 30px; visibility:hidden;'>{{ status.user_count }}</h6> 
+    </div>
+  </div>
+  <hr>
 
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
-</body>
+<section id="source">
+    <div class='row'>
+      <div class="card-body" style='padding-left:20px;'>
+          <h6 id='hdr1' style="visibility:hidden;"><b>Drag the tile to right to resequence :</b></h6>
+          <br>
+          <div  class="resequence" id="resequence" ondrop="drop(event)" ondragover="allowDrop(event)">
+          </div>
+        </div>
+<input type="submit" id='undo' value="Click here to undo" class="btn btn-lg" style="background-color:#0B6138; color:white; font-size:15px; margin-left:85%; visibility:hidden;" >
+</div>
+<hr>
+<div class='row'>
+    <div class="card-body" style='padding-left:20px;'>
+        <div class='revealed'>
+        </div>
+    </div>
+</div>
 
-</html>
+</section>
+
+
+
+    <script type="text/javascript">
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
+	  var resequence = "";
+	  var nbr_users = d3.select('#nbr_users').text();
+	  var user_count = d3.select('#user_count').text();
+	  console.log('nbr_user', nbr_users);
+	  if (nbr_users == 0) {
+		document.getElementById("seat").style.visibility = "visible";
+	}
+
+	  
+    socket.on( 'connect', function() {
+        socket.emit( 'my event', {
+          data: 'User Connected'
+    } )
+
+      console.log('socket id', socket.id)
+      console.log('user_count', user_count)
+      socket.emit( 'user_id', {
+            user_count : user_count,
+	      		nbr_users : nbr_users,
+            socket_id : socket.id
+          } )
+		  
+    } )
+
+    socket.on( 'game_info', function( msg ) {
+      console.log( 'dice', msg.roll, msg.dealer, msg.round )
+      $(".game_info").empty();
+      $( 'div.game_info' ).append( '<p><b style="padding-left:30px; color: #ccc;">Dice rolled is '+msg.roll+'</b></p>' )
+      $( 'div.game_info' ).append( '<p><b style="padding-left:30px; color: #ccc;">Dealer is '+msg.dealer+'</b></p>' )
+      $( 'div.game_info' ).append( '<p><b style="padding-left:30px; color: #ccc;">It is Round : '+msg.round+'</b></p>' )
+    } )
+
+    socket.on( 'to_dealer', function( msg ) {
+        var roll = getRndInteger(3, 18);
+        console.log('to_dealer :', roll, msg.dealer, msg.round);
+
+        socket.emit('roll_the_dice' , {roll : roll,
+                                      dealer : msg.dealer,
+                                      round : msg.round
+                    })
+    })
+
+    socket.on( 'to_player', function( msg ) {
+        console.log('to_player :', msg.list, msg.revealed_list);
+        document.getElementById("hdr1").style.visibility = "visible";
+        document.getElementById("undo").style.visibility = "visible";
+        var k = 0;
+        $(".resequence").empty();
+        hand = [];
+        hand = msg.list;
+        for (k = 0; k < (hand.length); k++) {
+          h = '<img id="'+ hand[k][0] +'" src= "static\\images\\' + hand[k][1] +'" draggable="true" ondragstart="drag(event)" width="75" height="90">'
+          console.log('hand :', h)
+          $( 'div.resequence' ).append( h )
+
+        }
+        resequence = document.getElementById('resequence').innerHTML;
+        console.log('resequence', resequence);
+
+        hand = [];
+        hand = msg.revealed_list;
+        if (!hand) {
+          $(".revealed").empty();
+          for (k = 0; k< hand.length; k++) {
+             h = '<img id="'+ hand[k][0] +'" src= "static\\images\\' + hand[k][1] +'"'>
+             console.log('revealed :', h)
+             $( 'div.revealed' ).append( h )
+        }
+        }
+    })
+
+
+    socket.on( 'my response', function( msg ) {
+        console.log( 'msg', msg )
+    		if (msg.user_count == "4") {
+     			document.getElementById("seat").style.visibility = "visible";
+          var t = '<div class="col-md-offset-5"><img id="figures" style="float:right;" src="static\\images\\mahjong.PNG"</div>';
+    			$(".message_holder").empty();
+    			$( 'div.message_holder' ).append( t )
+          console.log('mahjong image = ', t);
+          socket.emit( 'game_on', {
+            game_on : "Y"
+          } )
+	  		}
+		else {
+
+			  if( typeof msg.nbr_users !== 'undefined' ) {
+    			$(".message_holder").empty();
+    			$( 'div.message_holder' ).append( '<div><b style="color: #000">'+'waiting for '+msg.nbr_users+' user(s) </b></div>' )
+          }
+		}
+      })
+
+    function getRndInteger(min, max) {
+       return Math.floor(Math.random() * (max - min + 1) ) + min;
+    }
+
+    function allowDrop(ev) {
+        ev.preventDefault();
+      }
+              
+      function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+      }
+              
+      function drop(ev) {
+        
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        ev.target.appendChild(document.getElementById(data));
+      }
+
+
+      var undo = d3.select("#undo");
+
+      undo.on("click", function() {
+
+  // Prevent the page from refreshing
+        d3.event.preventDefault();
+        console.log('undo')
+        $(".resequence").empty();
+        var seq_node = document.getElementById('resequence');
+        seq_node.innerHTML = resequence;  
+        console.log('undo - done', resequence)
+
+    })      
+    
+  
+</script>      
+
+
+	<!--<script type="text/javascript" src="assets/js/app.js"></script>-->
+  </body>
+  </html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>*** Mahjong ***</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+ <script>
+    function allowDrop(ev) {
+        ev.preventDefault();
+      }
+              
+      function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+      }
+              
+      function drop(ev) {
+//        var discard_area = document.getElementsByClassName("discard_area")[0];  
+//        var img_var = discard_area.getElementsByTagName("img");
+//        var discarded_img = img_var[0];
+//        var throwawayNode = discard_area.removeChild(discarded_img);
+        
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        ev.target.appendChild(document.getElementById(data));
+      }
+        
+</script>      
+</head>
+
+<body>
+    <div class="container">
+        <div class="jumbotron" style="text-align: center; background-color:#D0F5A9; color:#243B0B; padding-top:10px;">
+            <h3>Let's play Mahjong - Round {{ info[0] }} </h3>
+                </h4>You are {{ info[1] }} &nbsp;&nbsp;&nbsp;Dealer is {{ info[2] }} </h4>
+                <h6 id = "dice">Dice rolled is {{ info[6] }}</h6>
+             <div class='info_4' style='visibility:hidden;'>{{ info[5] }}</div>
+        </div> 
+
+       <section id="source">
+                <div class="row">
+                        <div class="card-body" style='padding-left:20px;'>
+                            <h6>Drag the tile to right to resequence :</h6>
+                            <div  id="resequence" ondrop="drop(event)" ondragover="allowDrop(event)">
+                                               
+                                {% for tile in list %}
+
+<!--                            <input type="image" src={{ tile }} name="tiles" class="btTxt submit btn-lg" id="tiles" />-->
+                            <img id= {{  tile[0] }}  src= {{  tile[1] }} draggable="true" ondragstart="drag(event)" width="75" height="90">
+                            {% endfor %}
+                        </div>
+                  </div>
+                 <input type="submit" id='undo' value="Click here to undo" class="btn btn-lg" style="background-color:#0B6138; color:white; font-size:15px; margin-left:85%">
+            </div>
+        </section>   
+
+        <hr>
+        <section id="working_space">
+           
+            <div class="row discard_area" style="padding-left:20px;">
+            <div class="revealed"><h6 style='float:left;' >Revealed :</h6>
+              <div class="card-body" style='padding-left:20px;'>
+                          
+                {% for revealed_tile in revealed_list %}
+                   <img id= {{  revealed_tile[0] }}  src= {{  revealed_tile[1] }} width="60" height="80">
+                {% endfor %}
+            </div> 
+            <div  id="dump" ondrop="drop(event)" ondragover="allowDrop(event)"><h6>Discard here</h6></div>
+
+              <div class="row"></div>
+              <br> 
+              <h6 style="float:left;">Discarded by {{ info[4] }} :</h1>
+                <br>
+                <img id= {{  info[3] }}  src= {{  info[3] }} width="80" height="100">
+            </div>
+        </div>
+    </section>   
+    
+    </div>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.min.js"></script>
+
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="{{ url_for('static', filename='js/play.js') }}"></script>
+</body>
+
+</html>
